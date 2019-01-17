@@ -9,7 +9,9 @@
 </head>
 <body>
     <h1>Simple wall</h1>
-    <input type="button" value="logout">
+    <form action="/logout">
+        <input type="submit" value="Logout">
+    </form>
     <h1> Welcome {{session['first_name']}}</h1>
 
     <div class='six columns'>
@@ -18,13 +20,26 @@
         </div>
         {%for message in messages%}
             <h4>{{message['first_name']}} said :</h4>
-                <h5>"{{message['message']}}"</h5>
+            <h5>"{{message['message']}}"</h5>
+            <form action="/delete" method="post">
+                <input type="submit" value="Delete">
+                <input type="hidden" name="messageID" value='{{message['id']}}'>
+                <input type="hidden" name="recieverID" value='{{message['reciever_id']}}'>
+            </form>
         {%endfor%}
+
     </div>
 
     <div class='six columns'>
         <div class='sendContainer'>
             <h2>Send a Message</h2>
+            {% with flashes = get_flashed_messages() %}
+                    {% if flashes %}
+                        {% for flash in flashes %}
+                            <p>{{flash}}</p>
+                        {% endfor %}
+                    {% endif %}
+            {% endwith %}
             <p>You have sent a total of MESSAGES messages so far.</p>
             <form action="/send" method="post">
                 {%for user in users%}

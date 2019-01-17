@@ -8,13 +8,28 @@ bcrypt=Bcrypt(app)
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 app = Flask(__name__)
 app.secret_key = "ThisIsSecret!"
-DB="simplewalldb"
+DB="simpledb"
 @app.route('/')
 def index():
     
     
     return render_template('index.html')
 
+@app.route('/delete',methods=["POST"])
+def delete():
+    deleteMessage=request.form
+    if int(session['id'])!=int(deleteMessage['recieverID']):
+        return redirect('/danger')
+    
+    mysql=connectToMySQL(DB)
+    query="DELETE FROM messages WHERE id = %(message_id)s "
+       
+    data={
+        'message_id': deleteMessage['messageID']
+    }
+    delete=mysql.query_db(query,data)
+
+    return redirect('/dashboard')
 
 @app.route('/dashboard')
 def dashboard():
@@ -23,7 +38,7 @@ def dashboard():
     query="SELECT id,first_name FROM users;"
     users=mysql.query_db(query)
 
-    getMessages="SELECT message,sender_id,reciever_id,first_name,count(*) AS number FROM messages LEFT JOIN sends ON messages.id=sends.messages_id LEFT JOIN users ON sends.sender_id=users.id WHERE %(reciever_id)s;"
+    getMessages="SELECT message,sender_id,reciever_id,first_name,messages.id FROM messages LEFT JOIN users ON messages.sender_id=users.id WHERE %(reciever_id)s;"
     data={
         'reciever_id': session['id']
     }
@@ -39,13 +54,26 @@ def sendMessage():
     userSend=session['id']
     messageContent=message['message']
 
+    query = "INSERT INTO messages (message,reciever_id,sender_id) VALUES (%(message)s,%(reciever_id)s,%(sender_id)s);"
+    data={
+        'message':messageContent,
+        'reciever_id':userRecieve,
+        'sender_id':userSend
+    }
+    if mysql.query_db(query,data):
+        flash("Message Sent!")
     
-
-
 
     return redirect('/dashboard')
 
+@app.route('/danger')
+def danger():
+    return render_template('danger.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 @app.route('/register',methods=["POST"])
 def create():
     mysql=connectToMySQL(DB)
@@ -93,7 +121,7 @@ def create():
     new_user=mysql.query_db(query2,data2)
     flash("Successfully Registered!")
     session['first_name']=user['first_name']
-    session['id']=user['id']
+    session['id']=new_user
     return redirect('/dashboard')
 
 
