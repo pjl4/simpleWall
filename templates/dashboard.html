@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton-framework/1.1.1/skeleton.css">
+    <title>Simple Wall</title>
+</head>
+<body>
+    <h1>Simple wall</h1>
+    <input type="button" value="logout">
+    <h1> Welcome {{session['first_name']}}</h1>
+
+    <div class='six columns'>
+        <div class='messageContainer'>
+            <h3>{{messages['number']}} Message(s) for you ({{session['first_name']}})</h3>
+        </div>
+        {%for message in messages%}
+            <h4>{{message['first_name']}} said :</h4>
+                <h5>"{{message['message']}}"</h5>
+        {%endfor%}
+    </div>
+
+    <div class='six columns'>
+        <div class='sendContainer'>
+            <h2>Send a Message</h2>
+            <p>You have sent a total of MESSAGES messages so far.</p>
+            <form action="/send" method="post">
+                {%for user in users%}
+                    {%if user['id']!=session['id']%}
+                    <div class="formGroup">
+                        <h4>{{user['first_name']}}</h4>
+                        <textarea name="message" id="message" cols="30" rows="10"></textarea>
+                        <input type="submit" value="Send">
+                        <input type="hidden" name="reciever" value={{user['id']}}>
+                    </div>
+                    {%endif%}
+                {%endfor%}
+            </form>
+        </div>
+    </div>
+</body>
+</html>

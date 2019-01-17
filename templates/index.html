@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton-framework/1.1.1/skeleton.css">
+    <style>
+        .registerContainer{
+            border:2px solid black;
+            align-content: center;
+            display:inline-block;
+            border-radius: 5px;
+            margin-right:10px;
+        }
+        .loginContainer{
+            border:2px solid black;
+            border-radius:5px;
+        }
+        h4{
+            color:blue;
+        }
+        p{
+            color:red;
+        }
+    </style>
+    <title>Login and Registration</title>
+</head>
+<body>
+    <h1>Login and Registration</h1>
+    <div class="container">
+        <div class="registerContainer five columns">
+            <h4>Register Here!</h4>
+            <form action="/register" method="post">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p>{{message}}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <div class="formgroup">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" name="first_name" id="first_name" placeholder="Marty">
+                </div>
+                <div class="formgroup">
+                    <label for="last_name">last Name:</label>
+                    <input type="text" name="last_name" id="last_name" placeholder="McFly">
+                </div>
+                <div class="formgroup">
+                    <label for="email">Email:</label>
+                    <input type="text" name="email" id="email" placeholder="Mcfly88@future.com">
+                </div>
+                <div class="formgroup">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <div class="formgroup">
+                    <label for="confirm">Confirm Password</label>
+                    <input type="password" name="confirm" id="confirm">
+                </div>
+                <input type="submit" value="Register!">
+            </form>
+        </div>
+        <div class="loginContainer five columns">
+            <h4>Login here!</h4>
+            <form action="/login" method="post">
+                <div class="formgroup">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email">
+                </div>
+                <div class="formgroup">
+                    <label for="password">Password</label>
+                    <input type="password" name="passwordLogin" id="passwordLogin">
+                </div>
+                <input type="submit" value="Login!">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
